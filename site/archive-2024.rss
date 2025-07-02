@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>phqb</title><link></link><description></description><pubDate>Mon, 27 May 2024 00:00:00 GMT</pubDate><lastBuildDate>Wed, 02 Jul 2025 16:05:57 GMT</lastBuildDate><generator>marmite</generator><item><title>drill straight holes in wood end-grain without a jig</title><link>/drill-straight-holes-in-wood-end-grain-without-a-jig.html</link><category>woodworking</category><guid>/drill-straight-holes-in-wood-end-grain-without-a-jig.html</guid><pubDate>Mon, 27 May 2024 00:00:00 GMT</pubDate><source url="">archive-2024</source><content:encoded><![CDATA[<p>I was trying to drill straight holes in wood end-grain to make dowel joints. So I bought this jig</p>
+<img src="media/images/phqb-1716780848-0.webp" alt="phqb" width="300"/>
+<br/>
+<p><em>Source: AliExpress</em></p>
+<p>But my wood plank's end-grain is too small for this jig to be stable. I tried to hold the jig with my hand (It's dangerous, do not try this) but the drill bit is still jiggle.</p>
+<p>Desperately, I used another straight wood plank as a reference to eyeball the drill bit along left-right axis.</p>
+<img src="media/images/phqb-1716781502-0.jpg" alt="phqb" width="400"/>
+<p>For up-down axis, I eyeballed the drill bit along it once then tried to hold my drill straight.</p>
+<p>The result is quite good</p>
+<img src="media/images/phqb-1716781799-0.jpg" alt="phqb" width="400"/>
+<p>The dowel is slightly crooked along up-down axis. But it is usable.</p>
+<img src="media/images/phqb-1716781927-0.jpg" alt="phqb" width="400"/>
+<p>I'll add a bubble level indicator to guide my drill straight along up-down axis.</p>
+<p>I'm happy with this technique.</p>
+]]></content:encoded></item><item><title>Decorate a generated method in Go</title><link>/decorate-a-generated-method-in-go.html</link><category>golang</category><guid>/decorate-a-generated-method-in-go.html</guid><pubDate>Sun, 26 May 2024 00:00:00 GMT</pubDate><source url="">archive-2024</source><content:encoded><![CDATA[<p>I'm using <code>github.com/tinylib/msgp</code> to add marshal/unmarshal code to my structs. Some of my structs have pointer alias. So I have to ignore the alias via <code>msg:&quot;-&quot;</code> and assign it to its source after unmarshaling.</p>
+<p>But assigning aliases after each unmarshal call is repetitive and prone to errors. After hours of frustration, I devised a simple and so obvious trick to eliminate assigning alias at unmarshaling call site: renaming the struct and embedding it in a wrapper whose name is the struct's original name, then override and decorate its unmarshal method.</p>
+<p>For an example, my struct:</p>
+<pre><code>type MyStruct struct {
+    name       string
+    age        uint64
+    ref        *Foo
+    anotherRef *Foo `msg:&quot;-&quot;`
+}
+
+// generated method
+func (z *MyStruct) UnmarshalMsg(b []byte) error {}
+</code></pre>
+<p>becomes</p>
+<pre><code>type MyStruct struct {
+    myStructInner
+}
+
+// &quot;decorated&quot; method
+func (z *MyStruct) UnmarshalMsg(b []byte) error {
+    if err := z.myStructInner.UnmarshalMsg(b); err != nil {
+        return err
+    }
+    z.anotherRef = z.ref // assigning pointer alias
+    return nil
+}
+
+type myStructInner struct {
+    name       string
+    age        uint64
+    ref        *Foo
+    anotherRef *Foo `msg:&quot;-&quot;`
+}
+
+// generated method
+func (z *myStructInner) UnmarshalMsg(b []byte) error {}
+</code></pre>
+<p>The trick is so obvious that I wish I had came up with it sooner.</p>
+]]></content:encoded></item></channel></rss>
