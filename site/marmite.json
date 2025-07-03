@@ -2,9 +2,9 @@
   "marmite_version": "0.2.5",
   "posts": 3,
   "pages": 2,
-  "generated_at": "2025-07-02 23:28:31.152732889 +07:00",
-  "timestamp": 1751473711,
-  "elapsed_time": 0.037522921,
+  "generated_at": "2025-07-03 12:06:36.627865829 +07:00",
+  "timestamp": 1751519196,
+  "elapsed_time": 0.038715134,
   "config": {
     "name": "phqb",
     "tagline": "",
@@ -47,7 +47,9 @@
         "authors.html"
       ]
     ],
-    "extra": null,
+    "extra": {
+      "colorscheme": "clean"
+    },
     "authors": {},
     "toc": false,
     "json_feed": false

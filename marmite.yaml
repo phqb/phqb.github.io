@@ -32,7 +32,8 @@ menu:
   - archive.html
 - - Authors
   - authors.html
-extra: null
 authors: {}
 toc: false
 json_feed: false
+extra:
+  colorscheme: clean
